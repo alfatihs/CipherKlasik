@@ -1,11 +1,12 @@
 import { Cipher } from "./Cipher";
-
-export default class VigenereStandard implements Cipher {
+import { TextCipher } from "./TextCipher";
+export default class VigenereStandard extends TextCipher implements Cipher {
   private readonly alphabet: string;
   private readonly key: Uint8Array;
   private vigenereMatrix: string[][] = [];
 
   constructor(key: Uint8Array) {
+    super();
     this.alphabet = "abcdefghijklmnopqrstuvwxyz";
     this.generateVigenereMatrix();
     this.key = key;
@@ -31,16 +32,17 @@ export default class VigenereStandard implements Cipher {
   }
 
   encrypt(plaintext: Uint8Array): Uint8Array {
-    const keyStream = this.getKeyStream(plaintext.length);
-    const ciphertext = new Uint8Array(plaintext.length);
+    var cleanedPlainText = this.plaintextCleaning(plaintext);
+    const keyStream = this.getKeyStream(cleanedPlainText.length);
+    const ciphertext = new Uint8Array(cleanedPlainText.length);
 
-    for (let i = 0; i < plaintext.length; i++) {
+    for (let i = 0; i < cleanedPlainText.length; i++) {
       const plainCharIndex = this.alphabet.indexOf(
-        String.fromCharCode(plaintext[i])
+        String.fromCharCode(cleanedPlainText[i])
       );
       const keyCharIndex = this.alphabet.indexOf(keyStream[i]);
       if (plainCharIndex === -1) {
-        ciphertext[i] = plaintext[i];
+        ciphertext[i] = cleanedPlainText[i];
       } else {
         ciphertext[i] =
           this.vigenereMatrix[plainCharIndex][keyCharIndex].charCodeAt(0);

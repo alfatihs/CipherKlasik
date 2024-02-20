@@ -2,14 +2,15 @@ import { inverseModuloMatrix, multiplyMatrixMod } from "@/lib/Matrix";
 import { Cipher } from "./Cipher";
 import { TextCipher } from "./TextCipher";
 import * as math from "mathjs";
-import { decodeString } from "../encoder/Encoder";
+import { Padding } from "@/lib/encoder/Padding";
 
-const KEY_SPACE = 29;
+const KEY_SPACE = 26;
 
 export class TextHillCipher extends TextCipher implements Cipher {
   private key: math.Matrix;
   private invKey: math.Matrix;
   private m: number;
+  private padding: Padding;
 
   constructor(key: number[][]) {
     super();
@@ -24,27 +25,12 @@ export class TextHillCipher extends TextCipher implements Cipher {
     this.m = key.length;
     this.key = math.transpose(math.matrix(key));
     this.invKey = math.transpose(inverseModuloMatrix(key, KEY_SPACE));
+    this.padding = new Padding(this.m, 97, KEY_SPACE);
   }
 
   encrypt(plaintext: Uint8Array): Uint8Array {
     const cleanedPlaintext = this.plaintextCleaning(plaintext);
-
-    if (plaintext.length % this.m != 0) {
-      const padsize = this.m - (cleanedPlaintext.length % this.m);
-      const paddedPlaintext = new Uint8Array(padsize + cleanedPlaintext.length);
-
-      for (let i = 0; i < plaintext.length; i++) {
-        paddedPlaintext[i] = cleanedPlaintext[i];
-      }
-
-      for (let i = plaintext.length; i < paddedPlaintext.length; i++) {
-        paddedPlaintext[i] = 123;
-      }
-
-      plaintext = paddedPlaintext;
-    } else {
-      plaintext = cleanedPlaintext;
-    }
+    plaintext = this.padding.pad(cleanedPlaintext);
 
     const ciphertext = new Uint8Array(plaintext.length);
 
@@ -82,7 +68,7 @@ export class TextHillCipher extends TextCipher implements Cipher {
       }
     }
 
-    const plaintext = this.plaintextCleaning(paddedPlaintext);
+    const plaintext = this.padding.unpad(paddedPlaintext);
     return plaintext;
   }
 }

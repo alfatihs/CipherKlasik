@@ -1,5 +1,5 @@
-import TextAffineCipher from "../lib/cipher/AffineCipher";
-import { decodeString, encodeString } from "../lib/encoder/Encoder";
+import TextAffineCipher from "@/lib/cipher/AffineCipher";
+import { decodeString, encodeString } from "@/lib/encoder/Encoder";
 
 describe("Test affine cipher", () => {
   it("should encrypt and decrypt correctly", () => {
@@ -20,6 +20,16 @@ describe("Test affine cipher", () => {
     const decrypt = decodeString(affineCipher.decrypt(result));
 
     expect(decrypt).toBe("helloworld");
+  });
+
+  it("should encrypt and decrypt correctly", () => {
+    const affineCipher = new TextAffineCipher(1, 2);
+    const plaintext = "z";
+
+    const result = affineCipher.encrypt(encodeString(plaintext));
+    const decrypt = decodeString(affineCipher.decrypt(result));
+
+    expect(decrypt).toBe(plaintext);
   });
 
   it("shpuld throw an exception", () => {

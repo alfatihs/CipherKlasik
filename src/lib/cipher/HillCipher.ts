@@ -1,3 +1,4 @@
+import { inverseModuloMatrix } from "@/lib/Matrix";
 import { Cipher } from "./Cipher";
 import { TextCipher } from "./TextCipher";
 import * as math from "mathjs";
@@ -18,15 +19,8 @@ export class TextHillCipher extends TextCipher implements Cipher {
     }
 
     this.m = key.length;
-    this.key = math.matrix(key);
-
-    const det = math.det(this.key);
-    const inv = (math as any).invmod(det);
-
-    this.invKey = math
-      .inv(this.key)
-      .map((x) => x * det)
-      .map((x) => math.mod(x * inv, 26));
+    this.key = math.transpose(math.matrix(key));
+    this.invKey = math.transpose(inverseModuloMatrix(key, 26));
   }
 
   encrypt(plaintext: Uint8Array): Uint8Array {
@@ -35,17 +29,38 @@ export class TextHillCipher extends TextCipher implements Cipher {
 
     for (let i = 0; i < plaintext.length; i += this.m) {
       const char = plaintext.slice(i, i + this.m);
-      const charCode = char.map((c) => c - 97);
-      const result = math
-        .mod(math.multiply(this.key, math.matrix(charCode)), 26)
-        .toArray();
+      const charCode: number[] = [];
 
-      for (let j = 0; j < result.length; j++) {
-        ciphertext[i + j] = result[j] + 97;
+      char.map((c) => c - 97).forEach((el) => charCode.push(el));
+      const data = math.matrix(charCode);
+      const result = math.multiply(data, this.key).toArray();
+
+      let j = i;
+      for (let k = 0; k < result.length; k++, j++) {
+        ciphertext[j] = (result.at(k)?.valueOf() as number) + 97;
       }
     }
+
+    return ciphertext;
   }
+
   decrypt(ciphertext: Uint8Array): Uint8Array {
-    throw new Error("Method not implemented.");
+    const plaintext = new Uint8Array(ciphertext.length);
+
+    for (let i = 0; i < plaintext.length; i += this.m) {
+      const char = plaintext.slice(i, i + this.m);
+      const charCode: number[] = [];
+
+      char.map((c) => c - 97).forEach((el) => charCode.push(el));
+      const data = math.matrix(charCode);
+      const result = math.multiply(data, this.invKey).toArray();
+
+      let j = i;
+      for (let k = 0; k < result.length; k++, j++) {
+        plaintext[j] = (result.at(k)?.valueOf() as number) + 97;
+      }
+    }
+
+    return plaintext;
   }
 }

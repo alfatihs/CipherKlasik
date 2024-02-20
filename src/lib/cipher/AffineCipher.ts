@@ -1,10 +1,12 @@
 import { decodeString, encodeString } from "../encoder/Encoder";
 import { Cipher } from "./Cipher";
 import * as math from "mathjs";
+import { TextCipher } from "./TextCipher";
 
-export default class TextAffineCipher implements Cipher {
+export default class TextAffineCipher extends TextCipher implements Cipher {
   private invM: number;
   constructor(private m: number, private b: number) {
+    super();
     this.invM = (math as any).invmod(m, 26);
 
     if (Number.isNaN(this.invM) || this.invM === null) {
@@ -43,12 +45,5 @@ export default class TextAffineCipher implements Cipher {
     }
 
     return plaintext;
-  }
-
-  private plaintextCleaning(plaintext: Uint8Array): Uint8Array {
-    const data = decodeString(plaintext).toLowerCase();
-    const cleanedData = data.replace(/[^a-z]/g, "");
-
-    return encodeString(cleanedData);
   }
 }

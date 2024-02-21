@@ -1,5 +1,6 @@
 import TextAffineCipher from "@/lib/cipher/AffineCipher";
 import { decodeString, encodeString } from "@/lib/encoder/Encoder";
+import { generateKey } from "@/lib/keygen/AffineCipherKeygen";
 
 describe("Test affine cipher", () => {
   it("should encrypt and decrypt correctly", () => {
@@ -46,5 +47,17 @@ describe("Test affine cipher", () => {
     expect(() => {
       new TextAffineCipher(2, 3);
     }).toThrow("Key m should be prime relative to 26");
+  });
+});
+
+describe("Test Affine Keygen", () => {
+  it("should generate a key with m=5 and b=3", () => {
+    const affineCipher = generateKey("m=5, b=3");
+    expect(affineCipher).toStrictEqual({ m: 5, b: 3 });
+  });
+
+  it("should generate a key with m=7 and b=3", () => {
+    const affineCipher = generateKey("b=3 m=7");
+    expect(affineCipher).toStrictEqual({ m: 7, b: 3 });
   });
 });

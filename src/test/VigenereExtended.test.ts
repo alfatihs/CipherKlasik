@@ -5,7 +5,7 @@ import { decodeString, encodeString } from "../lib/encoder/Encoder";
 var keyString = "sony";
 var keyUint = encodeString(keyString);
 
-describe("Test Vigenere Standard cipher ", () => {
+describe("Test Vigenere Extended cipher ", () => {
   // it("should encrypt correctyly", () => {
   //   const vigenereCipher = new VigenereExtended(keyUint);
   //   const plaintext = "thisplaintext";

@@ -32,6 +32,16 @@ describe("Test affine cipher", () => {
     expect(decrypt).toBe(plaintext);
   });
 
+  it("should encrypt back and decrypt correctly", () => {
+    const affineCipher = new TextAffineCipher(1, -2);
+    const plaintext = "a";
+
+    const result = affineCipher.encrypt(encodeString(plaintext));
+    const decrypt = decodeString(affineCipher.decrypt(result));
+
+    expect(decrypt).toBe(plaintext);
+  });
+
   it("shpuld throw an exception", () => {
     expect(() => {
       new TextAffineCipher(2, 3);

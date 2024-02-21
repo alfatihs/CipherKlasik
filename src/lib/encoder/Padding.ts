@@ -2,8 +2,13 @@ export class Padding {
   constructor(
     private blockSize: number,
     private startCharacter: number,
-    private charSize: number
-  ) {}
+    private charSize: number,
+    private allowWrap: boolean = false
+  ) {
+    if (!allowWrap && blockSize > charSize) {
+      throw new Error("Block size should be smaller than character size");
+    }
+  }
 
   pad(data: Uint8Array): Uint8Array {
     const size = data.length;
@@ -35,6 +40,10 @@ export class Padding {
     ) {
       padSize += lastPad;
       lastPad = data[size - padSize - 1] - this.startCharacter + 1;
+
+      if (!this.allowWrap) {
+        break;
+      }
     }
 
     const result = new Uint8Array(size - padSize);

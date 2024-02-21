@@ -36,7 +36,7 @@ describe("Test padding", () => {
   });
 
   it("should able to pad and unpad when wrapped", () => {
-    const padding = new Padding(20, 65, 5);
+    const padding = new Padding(20, 65, 5, true);
     const text = "BECAK";
 
     const result = padding.pad(encodeString(text));
@@ -47,7 +47,7 @@ describe("Test padding", () => {
   });
 
   it("should able to pad and unpad when wrapped with first char", () => {
-    const padding = new Padding(20, 65, 5);
+    const padding = new Padding(20, 65, 5, true);
     const text = "BECAA";
 
     const result = padding.pad(encodeString(text));

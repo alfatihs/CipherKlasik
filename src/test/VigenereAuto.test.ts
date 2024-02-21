@@ -1,26 +1,26 @@
-import VigenereStandard from "../lib/cipher/VigenereStandard";
+import VigenereAuto from "@/lib/cipher/VigenereAuto";
 import { decodeString, encodeString } from "../lib/encoder/Encoder";
 
-var keyString = "sony";
+var keyString = "indo";
 var keyUint = encodeString(keyString);
 
 describe("Test Vigenere Standard cipher ", () => {
   it("should encrypt correctyly", () => {
-    const vigenereCipher = new VigenereStandard(keyUint);
-    const plaintext = "thisplaintext";
+    const vigenereCipher = new VigenereAuto(keyUint);
+    const plaintext = "negara penghasil minyak mentah di dunia";
 
     const result = vigenereCipher.encrypt(encodeString(plaintext));
     var decodedResult = decodeString(result);
     // expect(decodedResult).toBe("LVVQHZNGFHRVL");
-    expect(decodedResult).toBe("lvvqhzngfhrvl");
+    expect(decodedResult).toBe("vrjoeeveegwefosmavjmszcndmlqbdbqqd");
   });
 
   it("should decrypt correctyly", () => {
-    const vigenereCipher = new VigenereStandard(keyUint);
-    const plaintext = "helloworld";
+    const vigenereCipher = new VigenereAuto(keyUint);
+    const plaintext = "negarapenghasilminyakmentahdidunia";
 
     const result = vigenereCipher.encrypt(encodeString(plaintext));
-    var decodedResult = decodeString(result);
+    // var decodedResult = decodeString(result);
 
     const decrypt = decodeString(vigenereCipher.decrypt(result));
     expect(decrypt).toBe(plaintext);

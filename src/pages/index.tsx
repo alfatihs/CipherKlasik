@@ -33,6 +33,7 @@ export default function Homepage() {
   const [result, setResult] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const toast = useToast();
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (event: any) => {
     setInputValue(event.target.value);
@@ -40,13 +41,16 @@ export default function Homepage() {
 
   const handleEncrypt = async () => {
     try {
+      setLoading(true);
       if (inputType === "text") {
         const result = await encryptStringApi(encryptionType, key, inputValue);
         setResult(result);
       } else if (file != null) {
         await encryptFileApi(encryptionType, key, file);
       }
+      setLoading(false);
     } catch (e) {
+      setLoading(false);
       if (e instanceof AxiosError) {
         toast({
           status: "error",
@@ -66,13 +70,16 @@ export default function Homepage() {
 
   const handleDecrypt = async () => {
     try {
+      setLoading(true);
       if (inputType === "text") {
         const result = await decryptStringApi(encryptionType, key, inputValue);
         setResult(result);
       } else if (file != null) {
         await decryptFileApi(encryptionType, key, file);
       }
+      setLoading(false);
     } catch (e) {
+      setLoading(false);
       if (e instanceof AxiosError) {
         toast({
           status: "error",
@@ -162,13 +169,23 @@ export default function Homepage() {
         </FormControl>
 
         <Flex>
-          <Button colorScheme="blue" mr={2} onClick={handleEncrypt}>
+          <Button
+            colorScheme="blue"
+            mr={2}
+            onClick={handleEncrypt}
+            isLoading={loading}
+          >
             Encrypt
           </Button>
-          <Button colorScheme="blue" mr={2} onClick={handleDecrypt}>
+          <Button
+            colorScheme="blue"
+            mr={2}
+            onClick={handleDecrypt}
+            isLoading={loading}
+          >
             Decrypt
           </Button>
-          <Button colorScheme="gray" onClick={handleClear}>
+          <Button colorScheme="gray" onClick={handleClear} isLoading={loading}>
             Clear
           </Button>
         </Flex>

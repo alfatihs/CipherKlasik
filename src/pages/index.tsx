@@ -12,6 +12,7 @@ import {
   Flex,
   Toast,
   useToast,
+  Textarea,
 } from "@chakra-ui/react";
 import { CipherType } from "@/lib/CipherType";
 import {
@@ -20,6 +21,7 @@ import {
   encryptFileApi,
   encryptStringApi,
 } from "@/api/api";
+import { AxiosError } from "axios";
 
 export default function Homepage() {
   const [inputType, setInputType] = useState("text");
@@ -45,7 +47,15 @@ export default function Homepage() {
         await encryptFileApi(encryptionType, key, file);
       }
     } catch (e) {
-      console.error(e);
+      if (e instanceof AxiosError) {
+        toast({
+          status: "error",
+          title: "Error",
+          description: `${e.response?.data.message}`,
+        });
+        return;
+      }
+
       toast({
         status: "error",
         title: "Error",
@@ -63,7 +73,15 @@ export default function Homepage() {
         await decryptFileApi(encryptionType, key, file);
       }
     } catch (e) {
-      console.error(e);
+      if (e instanceof AxiosError) {
+        toast({
+          status: "error",
+          title: "Error",
+          description: `${e.response?.data.message}`,
+        });
+        return;
+      }
+
       toast({
         status: "error",
         title: "Error",
@@ -122,11 +140,7 @@ export default function Homepage() {
         {inputType === "text" ? (
           <FormControl mb={4}>
             <FormLabel>Input Text</FormLabel>
-            <Input
-              type="text"
-              value={inputValue}
-              onChange={handleInputChange}
-            />
+            <Textarea value={inputValue} onChange={handleInputChange} />
           </FormControl>
         ) : (
           <FormControl mb={4}>
@@ -144,11 +158,7 @@ export default function Homepage() {
 
         <FormControl mb={4}>
           <FormLabel>Key</FormLabel>
-          <Input
-            type="text"
-            value={key}
-            onChange={(e) => setKey(e.target.value)}
-          />
+          <Textarea value={key} onChange={(e) => setKey(e.target.value)} />
         </FormControl>
 
         <Flex>

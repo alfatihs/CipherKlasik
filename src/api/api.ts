@@ -71,6 +71,7 @@ function downloadAxiosResponse(response: AxiosResponse) {
 
   const aAnchor = document.createElement("a");
   aAnchor.setAttribute("download", getFileName(headerLine));
+  aAnchor.href = href;
   document.body.appendChild(aAnchor);
   aAnchor.click();
 

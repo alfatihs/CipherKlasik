@@ -1,4 +1,4 @@
-import { CipherType } from "./CipherUtil";
+import { CipherType } from "./CipherType";
 import { ValidationError } from "./ValidationError";
 
 export interface UploadPayload {

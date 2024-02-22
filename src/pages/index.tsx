@@ -10,33 +10,73 @@ import {
   Input,
   Button,
   Flex,
+  Toast,
+  useToast,
 } from "@chakra-ui/react";
+import { CipherType } from "@/lib/CipherType";
+import {
+  decryptFileApi,
+  decryptStringApi,
+  encryptFileApi,
+  encryptStringApi,
+} from "@/api/api";
 
 export default function Homepage() {
   const [inputType, setInputType] = useState("text");
   const [inputValue, setInputValue] = useState("");
-  const [vigenereType, setVigenereType] = useState("encrypt");
+  const [encryptionType, setEncryptionType] = useState(
+    CipherType.VigenereStandard
+  );
   const [key, setKey] = useState("");
+  const [result, setResult] = useState("");
+  const [file, setFile] = useState<File | null>(null);
+  const toast = useToast();
 
   const handleInputChange = (event: any) => {
     setInputValue(event.target.value);
   };
 
-  const handleEncrypt = () => {
-    // Add encryption logic here
-    console.log("Encrypting...");
+  const handleEncrypt = async () => {
+    try {
+      if (inputType === "text") {
+        const result = await encryptStringApi(encryptionType, key, inputValue);
+        setResult(result);
+      } else if (file != null) {
+        await encryptFileApi(encryptionType, key, file);
+      }
+    } catch (e) {
+      console.error(e);
+      toast({
+        status: "error",
+        title: "Error",
+        description: `${(e as any).message}`,
+      });
+    }
   };
 
-  const handleDecrypt = () => {
-    // Add decryption logic here
-    console.log("Decrypting...");
+  const handleDecrypt = async () => {
+    try {
+      if (inputType === "text") {
+        const result = await decryptStringApi(encryptionType, key, inputValue);
+        setResult(result);
+      } else if (file != null) {
+        await decryptFileApi(encryptionType, key, file);
+      }
+    } catch (e) {
+      console.error(e);
+      toast({
+        status: "error",
+        title: "Error",
+        description: `${(e as any).message}`,
+      });
+    }
   };
 
   const handleClear = () => {
     setInputType("text");
     setInputValue("");
-    setVigenereType("vigenere");
     setKey("");
+    setEncryptionType(CipherType.VigenereStandard);
   };
 
   return (
@@ -49,16 +89,22 @@ export default function Homepage() {
         <FormControl mb={4}>
           <FormLabel>Cipher Type</FormLabel>
           <Select
-            value={vigenereType}
-            onChange={(e) => setVigenereType(e.target.value)}
+            value={encryptionType}
+            onChange={(e) => setEncryptionType(e.target.value as CipherType)}
           >
-            <option value="vigenere">Vigenere (Standard)</option>
-            <option value="vigenere-extended">Vigenere (Extended)</option>
-            <option value="vigenere-autokey">Vigenere (Auto-Key)</option>
-            <option value="playfair">Playfair</option>
-            <option value="affine">Affine</option>
-            <option value="hill">Hill</option>
-            <option value="super">Super</option>
+            <option value={CipherType.VigenereStandard}>
+              Vigenere (Standard)
+            </option>
+            <option value={CipherType.VigenereExtended}>
+              Vigenere (Extended)
+            </option>
+            <option value={CipherType.VigenereAutokey}>
+              Vigenere (Auto-Key)
+            </option>
+            <option value={CipherType.Playfair}>Playfair</option>
+            <option value={CipherType.Affine}>Affine</option>
+            <option value={CipherType.Hill}>Hill</option>
+            <option value={CipherType.SuperEncryption}>Super</option>
           </Select>
         </FormControl>
 
@@ -85,8 +131,14 @@ export default function Homepage() {
         ) : (
           <FormControl mb={4}>
             <FormLabel>Upload File</FormLabel>
-            {/* Implement file uploader here */}
-            <Input type="file" />
+            <Input
+              type="file"
+              onChange={(el) =>
+                setFile(
+                  el.currentTarget.files ? el.currentTarget.files[0] : null
+                )
+              }
+            />
           </FormControl>
         )}
 
@@ -100,24 +152,22 @@ export default function Homepage() {
         </FormControl>
 
         <Flex>
-          <Button
-            colorScheme="blue"
-            mr={2}
-            onClick={vigenereType === "encrypt" ? handleEncrypt : handleDecrypt}
-          >
+          <Button colorScheme="blue" mr={2} onClick={handleEncrypt}>
             Encrypt
           </Button>
-          <Button
-            colorScheme="blue"
-            mr={2}
-            onClick={vigenereType === "encrypt" ? handleEncrypt : handleDecrypt}
-          >
+          <Button colorScheme="blue" mr={2} onClick={handleDecrypt}>
             Decrypt
           </Button>
           <Button colorScheme="gray" onClick={handleClear}>
             Clear
           </Button>
         </Flex>
+        <Box mt={5}>
+          <Heading as="h2" size="md">
+            Hasil
+          </Heading>
+          <Text>{result}</Text>
+        </Box>
       </Box>
     </ChakraProvider>
   );

@@ -1,3 +1,4 @@
+import { CipherType } from "./CipherType";
 import TextAffineCipher from "./cipher/AffineCipher";
 import { Cipher } from "./cipher/Cipher";
 import { TextHillCipher } from "./cipher/HillCipher";
@@ -10,16 +11,6 @@ import VigenereStandard from "./cipher/VigenereStandard";
 import { encodeString } from "./encoder/Encoder";
 import { generateKey as affineGenerateKey } from "./keygen/AffineCipherKeygen";
 import { generateKey as hillGenerateKey } from "./keygen/HillCipherKeygen";
-
-export enum CipherType {
-  Affine,
-  Hill,
-  SuperEncryption,
-  Playfair,
-  VigenereStandard,
-  VigenereExtended,
-  VigenereAutokey,
-}
 
 export function encryptFromString(
   type: CipherType,

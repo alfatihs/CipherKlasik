@@ -17,11 +17,11 @@ describe("Test Playfair Cipher ", () => {
 
   it("should decrypt correctyly", () => {
     const vigenereCipher = new PlayfairCipher(keyUint);
-    const plaintext = "temuixibunantimalamx";
+    const plaintext = "temuixibunjantimalam";
 
     const result = vigenereCipher.encrypt(encodeString(plaintext));
 
     const decrypt = decodeString(vigenereCipher.decrypt(result));
-    expect(decrypt).toBe(plaintext);
+    expect(decrypt).toBe("temuixibuniantimalam");
   });
 });

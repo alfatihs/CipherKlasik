@@ -114,7 +114,7 @@ export default class PlayfairCipher extends TextCipher implements Cipher {
 
   encrypt(plaintext: Uint8Array): Uint8Array {
     const plaintextCleaned = this.plaintextCleaning(plaintext);
-    const plaintextString = decodeString(plaintextCleaned);
+    const plaintextString = decodeString(plaintextCleaned).replaceAll("j", "i");
     const processedPlainText = this.processString(plaintextString);
 
     let encryptedText = "";

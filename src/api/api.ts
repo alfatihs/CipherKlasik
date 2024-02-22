@@ -43,7 +43,9 @@ export async function encryptFileApi(
   formData.append("key", key);
   formData.append("file", file);
 
-  const result = await http.post(`/api/${type}/upload`, formData);
+  const result = await http.post(`/api/${type}/upload`, formData, {
+    responseType: "blob",
+  });
   downloadAxiosResponse(result);
 }
 

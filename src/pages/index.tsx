@@ -55,7 +55,7 @@ export default function Homepage() {
         toast({
           status: "error",
           title: "Error",
-          description: `${e.response?.data.message}`,
+          description: `${e.response?.data.message ?? e.message}`,
         });
         return;
       }
@@ -84,7 +84,7 @@ export default function Homepage() {
         toast({
           status: "error",
           title: "Error",
-          description: `${e.response?.data.message}`,
+          description: `${e.response?.data.message ?? e.message}`,
         });
         return;
       }

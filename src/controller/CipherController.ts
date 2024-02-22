@@ -1,5 +1,5 @@
+import { CipherType } from "@/lib/CipherType";
 import {
-  CipherType,
   encryptString,
   decryptToString,
   encryptFile as utilFileEncrypt,

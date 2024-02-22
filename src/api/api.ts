@@ -57,7 +57,9 @@ export async function decryptFileApi(
   formData.append("key", key);
   formData.append("file", file);
 
-  const result = await http.post(`/api/${type}/upload`, formData);
+  const result = await http.post(`/api/${type}/upload`, formData, {
+    responseType: "blob",
+  });
   downloadAxiosResponse(result);
 }
 
@@ -67,7 +69,7 @@ function getFileName(header: string) {
 
 function downloadAxiosResponse(response: AxiosResponse) {
   const headerLine = response.headers["content-disposition"];
-  const href = URL.createObjectURL(new Blob([response.data]));
+  const href = URL.createObjectURL(response.data);
 
   const aAnchor = document.createElement("a");
   aAnchor.setAttribute("download", getFileName(headerLine));
